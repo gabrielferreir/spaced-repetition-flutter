@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './home.dart';
 import './deck.dart';
+import './card.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Home',
@@ -8,5 +9,6 @@ void main() => runApp(MaterialApp(
       routes: {
         '/': (context) => HomePage(),
         '/deck': (context) => DeckPage(),
+        '/card': (context) => CardPage(),
       },
     ));

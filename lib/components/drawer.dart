@@ -19,19 +19,27 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               children: <Widget>[Text('TG')],
             ),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.blueGrey,
             ),
           ),
           ListTile(
             title: Text('Home'),
             onTap: () {
-              Navigator.pushNamed(context, '/');
+              Navigator.pushReplacementNamed(context, '/');
+//              Navigator.pushNamed(context, '/');
+//              Navigator.popAndPushNamed(context, '/');
             },
           ),
           ListTile(
             title: Text('Baralhos'),
             onTap: () {
-              Navigator.pushNamed(context, '/deck');
+              Navigator.pushReplacementNamed(context, '/deck');
+            },
+          ),
+          ListTile(
+            title: Text('Card'),
+            onTap: () {
+              Navigator.pushNamed(context, '/card');
             },
           ),
         ],

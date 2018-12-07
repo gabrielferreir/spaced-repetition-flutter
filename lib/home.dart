@@ -13,6 +13,7 @@ class _HomePageState extends State<HomePage> {
       drawer: DrawerWidget(),
       appBar: AppBar(
         title: Text('Home'),
+        backgroundColor: Colors.blueGrey,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
                 'TG',
                 style: TextStyle(
                     fontSize: 82.0,
-                    color: Colors.blue,
+                    color: Colors.blueGrey,
                     fontWeight: FontWeight.bold),
               )
             ],

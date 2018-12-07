@@ -12,6 +12,7 @@ class _DeckPageState extends State<DeckPage> {
     return Scaffold(
       drawer: DrawerWidget(),
       appBar: AppBar(
+        backgroundColor: Colors.blueGrey,
         title: Text('Baralhos'),
       ),
       body: ListView(
