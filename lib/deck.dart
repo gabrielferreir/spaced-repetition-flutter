@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './components/drawer.dart';
+import './router/slide_router_right.dart';
+import './card.dart';
 
 class DeckPage extends StatefulWidget {
   @override
@@ -22,52 +24,72 @@ class _DeckPageState extends State<DeckPage> {
           ListTile(
             title: Text('Programação Orientada a Objetos'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Banco de dados'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Inglês'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Programação Web'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Engenharia de software III'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Programação Orientada a Objetos'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Banco de dados'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Inglês'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Programação Web'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
           ListTile(
             title: Text('Engenharia de software III'),
             subtitle: Text('Ultimo acesso: 07/12/2018'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+            },
           ),
         ],
       ),

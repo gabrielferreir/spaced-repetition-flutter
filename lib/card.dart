@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import './components/drawer.dart';
 
 class CardPage extends StatefulWidget {
   @override
@@ -9,8 +8,10 @@ class CardPage extends StatefulWidget {
 class _CardPageState extends State<CardPage> {
   _gerateList() {
     List<Widget> list = [];
-    for (var i = 0; i < 5; i++) {
-      list.add(MemoryCard());
+    for (var i = 0; i < 3; i++) {
+      list.add(MemoryCard(
+        index: i,
+      ));
     }
     return list;
   }
@@ -37,17 +38,15 @@ class _CardPageState extends State<CardPage> {
   }
 }
 
-
-
 class MemoryCard extends StatefulWidget {
-  String titulo = '';
+  int index;
 
-  MemoryCard({String titulo}) {
-    this.titulo = titulo != null ? titulo : '';
+  MemoryCard({int this.index}) {
+    this.index = index;
   }
 
   @override
-  _MemoryCardState createState() => _MemoryCardState(titulo: titulo);
+  _MemoryCardState createState() => _MemoryCardState(index: index);
 }
 
 class ItemCard {
@@ -57,16 +56,45 @@ class ItemCard {
   ItemCard({this.title, this.description});
 }
 
-class _MemoryCardState extends State<MemoryCard> {
+class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   List<ItemCard> cards = [];
   bool front = true;
-  num index = 0;
+  num index;
 
   Offset cardOffset = const Offset(0.0, 0.0);
   Offset dragStart;
   Offset dragPosition;
+  Offset slideBackStart;
+  AnimationController slideBackAnimation;
 
-  _MemoryCardState({String titulo}) {
+  @override
+  void initState() {
+    super.initState();
+    slideBackAnimation = AnimationController(
+        vsync: this, duration: const Duration(microseconds: 1000))
+      ..addListener(() => setState(() {
+            cardOffset = Offset.lerp(slideBackStart, const Offset(0, 0),
+                Curves.elasticInOut.transform(slideBackAnimation.value));
+          }))
+      ..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.completed) {
+          setState(() {
+            dragStart = null;
+            slideBackStart = null;
+            dragPosition = null;
+          });
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    slideBackAnimation.dispose();
+    super.dispose();
+  }
+
+  _MemoryCardState({int index}) {
+    this.index = index;
     var a = ItemCard(title: 'Pazuzu 01', description: 'Description 01');
     var b = ItemCard(title: 'Pazuzu 02', description: 'Description 02');
     var c = ItemCard(title: 'Pazuzu 03', description: 'Description 03');
@@ -97,7 +125,10 @@ class _MemoryCardState extends State<MemoryCard> {
     } else if (cardOffset.dx < left) {
       print('Arrastou pra esquerda');
     }
+
     setState(() {
+//          slideBackStart = cardOffset;
+//      slideBackAnimation.forward(from: 0.0);
       dragStart = null;
       dragPosition = null;
       cardOffset = const Offset(0.0, 0.0);
@@ -126,6 +157,7 @@ class _MemoryCardState extends State<MemoryCard> {
   Widget _frontCard() {
     return Card(
         elevation: 8.0,
+        color: Colors.green,
         child: Container(
           child: InkWell(
               onTap: () {},
@@ -193,7 +225,6 @@ class _MemoryCardState extends State<MemoryCard> {
                 }
                 this.front = true;
               }
-//                  this.front = !this.front;
             });
           }),
       bottom: 16.0,
@@ -242,5 +273,4 @@ class _MemoryCardState extends State<MemoryCard> {
       this.front = true;
     });
   }
-
 }

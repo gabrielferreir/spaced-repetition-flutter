@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../router/slide_router_right.dart';
 import '../home.dart';
 import '../deck.dart';
-import '../card.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -29,26 +28,23 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ListTile(
             title: Text('Home'),
             onTap: () {
-//              Navigator.pushReplacementNamed(context, '/');
-              Navigator.pushReplacement(context, SlideRouterRight(widget: HomePage()));
-//              Navigator.pushNamed(context, '/');
-//              Navigator.popAndPushNamed(context, '/');
+              Navigator.pushReplacement(
+                  context, SlideRouterRight(widget: HomePage()));
             },
           ),
           ListTile(
             title: Text('Baralhos'),
             onTap: () {
-//              Navigator.pushReplacementNamed(context, '/deck');
-              Navigator.pushReplacement(context, SlideRouterRight(widget: DeckPage()));
+              Navigator.pushReplacement(
+                  context, SlideRouterRight(widget: DeckPage()));
             },
           ),
-          ListTile(
-            title: Text('Card'),
-            onTap: () {
-//              Navigator.pushNamed(context, '/card');
-              Navigator.push(context, SlideRouterRight(widget: CardPage()));
-            },
-          ),
+//          ListTile(
+//            title: Text('Card'),
+//            onTap: () {
+//              Navigator.push(context, SlideRouterRight(widget: CardPage()));
+//            },
+//          ),
         ],
       ),
     );
