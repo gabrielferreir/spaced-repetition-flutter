@@ -7,12 +7,17 @@ class CardPage extends StatefulWidget {
 }
 
 class _CardPageState extends State<CardPage> {
+  _gerateList() {
+    List<Widget> list = [];
+    for (var i = 0; i < 5; i++) {
+      list.add(MemoryCard());
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
-//      drawer: DrawerWidget(),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -20,21 +25,19 @@ class _CardPageState extends State<CardPage> {
       ),
       backgroundColor: Colors.blueGrey,
       body: Container(
-//        color: Colors.purple,
         child: Container(
-//          color: Colors.green,
           margin: EdgeInsets.all(16.0),
           constraints: BoxConstraints.expand(),
           child: Stack(
-            children: <Widget>[
-              MemoryCard(),
-            ],
+            children: _gerateList(),
           ),
         ),
       ),
     );
   }
 }
+
+
 
 class MemoryCard extends StatefulWidget {
   String titulo = '';
