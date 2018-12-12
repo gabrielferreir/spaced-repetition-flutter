@@ -67,11 +67,56 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   Offset slideBackStart;
   AnimationController slideBackAnimation;
 
-//  Tween<Offset>
+//  AnimationController sideCardAnimation;
+//  Animation<double> sideCard;
+
+  AnimationController flipToBackController;
+  Animation<double> flipToBackAnimation;
+  double flipToBack = 0.0;
+  double flipToBackOpacity = 1.0;
+
+  AnimationController flipToFrontController;
+  Animation<double> flipToFrontAnimation;
+  double flipToFront = 3.14 / 2;
+  double flipToFrontOpacity = 1.0;
 
   @override
   void initState() {
     super.initState();
+
+    // VIRAR FRONT DO CARD
+    flipToBackController = new AnimationController(
+        duration: const Duration(milliseconds: 280), vsync: this);
+    flipToBackAnimation =
+        Tween(begin: 0.0, end: 3.14 / 2).animate(flipToBackController)
+          ..addListener(() {
+            setState(() {
+              flipToBack = flipToBackAnimation.value;
+              if (flipToBackAnimation.isCompleted) {
+                flipToBackOpacity = 0.0;
+                flipToFrontController.forward();
+              }
+            });
+          });
+
+    // VIRAR BACK DO CARD
+    flipToFrontController = new AnimationController(
+        duration: const Duration(milliseconds: 280), vsync: this);
+    flipToFrontAnimation =
+        Tween(begin: -3.14 / 2, end: 0.0).animate(flipToFrontController)
+          ..addListener(() {
+            setState(() {
+              flipToFront = flipToFrontAnimation.value;
+//          if (flipToBackAnimation.isCompleted) {
+//            setState(() {
+//              front = false;
+//            });
+//          };
+            });
+          });
+
+    // ------------------------------------------------
+
     slideBackAnimation = new AnimationController(
         duration: const Duration(milliseconds: 480), vsync: this)
       ..addListener(() => setState(() {
@@ -139,73 +184,90 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Transform(
       transform: Matrix4.translationValues(cardOffset.dx, cardOffset.dy, 0.0),
+      alignment: Alignment.center,
       child: GestureDetector(
         onPanStart: _onPanStart,
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
         child: Stack(
-          children: <Widget>[
-            front ? _frontCard() : _backCard(),
-            _controls(),
-            _cardButton()
-          ],
+          children: <Widget>[_Card(), _controls(), _cardButton()],
         ),
       ),
     );
   }
 
-  Widget _frontCard() {
-    return Card(
-        elevation: 8.0,
-        color: Colors.green,
-        child: Container(
-          child: InkWell(
-              onTap: () {},
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-                      child: Text(this.cards[this.index].title,
-                          style: TextStyle(fontSize: 32.0)),
-                    ),
-                    Text(
-                      this.cards[this.index].description,
-                      style: TextStyle(fontSize: 16.0),
-                    )
-                  ],
+  Widget _Card() {
+    return Stack(
+      children: <Widget>[
+        Transform(
+//          transform: Matrix4.rotationY(flipToFront),
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001)
+            ..rotateY(flipToFront),
+          alignment: Alignment.center,
+          child: Opacity(
+              opacity: 1.0,
+              child: Card(
+                elevation: 2.0,
+                child: Container(
+                  child: InkWell(
+                      onTap: () {},
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 0.0, vertical: 8.0),
+                              child: Text('BACK',
+                                  style: TextStyle(fontSize: 32.0)),
+                            ),
+                            Text(
+                              'BACK',
+                              style: TextStyle(fontSize: 16.0),
+                            )
+                          ],
+                        ),
+                      )),
+                  constraints: BoxConstraints.expand(),
                 ),
               )),
-          constraints: BoxConstraints.expand(),
-        ));
-  }
-
-  Widget _backCard() {
-    return Card(
-      elevation: 8.0,
-      child: Container(
-        child: InkWell(
-            onTap: () {},
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-                    child: Text('BACK', style: TextStyle(fontSize: 32.0)),
-                  ),
-                  Text(
-                    'BACK',
-                    style: TextStyle(fontSize: 16.0),
-                  )
-                ],
-              ),
+        ),
+        Transform(
+//            transform: Matrix4.rotationY(flipToBack),
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001)
+              ..rotateY(flipToBack),
+            alignment: Alignment.center,
+            child: Opacity(
+              opacity: flipToBackOpacity,
+              child: Card(
+                  elevation: 2.0,
+                  child: Container(
+                    child: InkWell(
+                        onTap: () {},
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 0.0, vertical: 8.0),
+                                child: Text(this.cards[this.index].title,
+                                    style: TextStyle(fontSize: 32.0)),
+                              ),
+                              Text(
+                                this.cards[this.index].description,
+                                style: TextStyle(fontSize: 16.0),
+                              )
+                            ],
+                          ),
+                        )),
+                    constraints: BoxConstraints.expand(),
+                  )),
             )),
-        constraints: BoxConstraints.expand(),
-      ),
+      ],
+      fit: StackFit.expand,
     );
   }
 
@@ -263,9 +325,11 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   }
 
   _next() {
-    setState(() {
-      this.front = false;
-    });
+    print('next()');
+//    setState(() {
+//      this.front = false;
+//    });
+    flipToBackController.forward();
   }
 
   _prev() {
