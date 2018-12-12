@@ -67,21 +67,26 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   Offset slideBackStart;
   AnimationController slideBackAnimation;
 
+//  Tween<Offset>
+
   @override
   void initState() {
     super.initState();
-    slideBackAnimation = AnimationController(
-        vsync: this, duration: const Duration(microseconds: 1000))
+    slideBackAnimation = new AnimationController(
+        duration: const Duration(milliseconds: 480), vsync: this)
       ..addListener(() => setState(() {
-            cardOffset = Offset.lerp(slideBackStart, const Offset(0, 0),
-                Curves.elasticInOut.transform(slideBackAnimation.value));
+            cardOffset = Offset.lerp(
+              slideBackStart,
+              const Offset(0.0, 0.0),
+              Curves.decelerate.transform(slideBackAnimation.value),
+            );
           }))
       ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           setState(() {
             dragStart = null;
             slideBackStart = null;
-            dragPosition = null;
+            dragPosition = Offset(0.00, 0.0);
           });
         }
       });
@@ -126,13 +131,8 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
       print('Arrastou pra esquerda');
     }
 
-    setState(() {
-//          slideBackStart = cardOffset;
-//      slideBackAnimation.forward(from: 0.0);
-      dragStart = null;
-      dragPosition = null;
-      cardOffset = const Offset(0.0, 0.0);
-    });
+    slideBackStart = cardOffset;
+    slideBackAnimation.forward(from: 0.0);
   }
 
   @override
