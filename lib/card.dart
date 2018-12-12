@@ -67,8 +67,7 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   Offset slideBackStart;
   AnimationController slideBackAnimation;
 
-//  AnimationController sideCardAnimation;
-//  Animation<double> sideCard;
+  // FLIP TO GO
 
   AnimationController flipToBackController;
   Animation<double> flipToBackAnimation;
@@ -80,6 +79,14 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   double flipToFront = 3.14 / 2;
   double flipToFrontOpacity = 1.0;
 
+  // FLIP TO BACK
+
+  AnimationController flipToFrontController2;
+  Animation<double> flipToFrontAnimation2;
+
+  AnimationController flipToBackController2;
+  Animation<double> flipToBackAnimation2;
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +95,7 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
     flipToBackController = new AnimationController(
         duration: const Duration(milliseconds: 280), vsync: this);
     flipToBackAnimation =
-        Tween(begin: 0.0, end: 3.14 / 2).animate(flipToBackController)
+        Tween(begin: 0.0, end: -3.14 / 2).animate(flipToBackController)
           ..addListener(() {
             setState(() {
               flipToBack = flipToBackAnimation.value;
@@ -103,17 +110,39 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
     flipToFrontController = new AnimationController(
         duration: const Duration(milliseconds: 280), vsync: this);
     flipToFrontAnimation =
-        Tween(begin: -3.14 / 2, end: 0.0).animate(flipToFrontController)
+        Tween(begin: 3.14 / 2, end: 0.0).animate(flipToFrontController)
           ..addListener(() {
             setState(() {
               flipToFront = flipToFrontAnimation.value;
-//          if (flipToBackAnimation.isCompleted) {
-//            setState(() {
-//              front = false;
-//            });
-//          };
             });
           });
+
+    // ---
+
+    flipToFrontController2 = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 2000));
+    flipToFrontAnimation2 =
+        Tween(begin: 0.0, end: 3.14 / 2).animate(flipToFrontController2)
+          ..addListener(() {
+            setState(() {
+              flipToBackOpacity = 1.0;
+              flipToFront = flipToFrontAnimation2.value;
+              flipToBackController2.forward();
+            });
+          });
+
+    flipToBackController2 = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 2000));
+    flipToBackAnimation2 =
+    Tween(begin: -3.14 / 2, end: 0.0).animate(flipToBackController2)
+      ..addListener(() {
+        setState(() {
+          flipToBack = flipToBackAnimation2.value;
+//          if (flipToBackAnimation2.isCompleted) {
+//            flipToBackOpacity = 0.0;
+//          }
+        });
+      });
 
     // ------------------------------------------------
 
@@ -200,13 +229,12 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
     return Stack(
       children: <Widget>[
         Transform(
-//          transform: Matrix4.rotationY(flipToFront),
           transform: Matrix4.identity()
             ..setEntry(3, 2, 0.001)
             ..rotateY(flipToFront),
           alignment: Alignment.center,
           child: Opacity(
-              opacity: 1.0,
+              opacity: flipToFrontOpacity,
               child: Card(
                 elevation: 2.0,
                 child: Container(
@@ -333,8 +361,10 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   }
 
   _prev() {
-    setState(() {
-      this.front = true;
-    });
+    print('prev');
+    flipToFrontController2.forward();
+//    setState(() {
+//      this.front = true;
+//    });
   }
 }
