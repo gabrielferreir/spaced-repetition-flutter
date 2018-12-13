@@ -8,7 +8,7 @@ class CardPage extends StatefulWidget {
 class _CardPageState extends State<CardPage> {
   _gerateList() {
     List<Widget> list = [];
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 1; i++) {
       list.add(MemoryCard(
         index: i,
       ));
@@ -77,7 +77,7 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
   AnimationController flipToFrontController;
   Animation<double> flipToFrontAnimation;
   double flipToFront = 3.14 / 2;
-  double flipToFrontOpacity = 1.0;
+  double flipToFrontOpacity = 0.0;
 
   // FLIP TO BACK
 
@@ -101,6 +101,7 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
               flipToBack = flipToBackAnimation.value;
               if (flipToBackAnimation.isCompleted) {
                 flipToBackOpacity = 0.0;
+                flipToFrontOpacity = 1.0;
                 flipToFrontController.forward();
               }
             });
@@ -115,37 +116,55 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
             setState(() {
               flipToFront = flipToFrontAnimation.value;
             });
+          })
+          ..addStatusListener((AnimationStatus status) {
+            if (status == AnimationStatus.completed) {
+              setState(() {
+                flipToBackController2.reset();
+                flipToFrontController2.reset();
+              });
+            }
           });
 
-    // ---
+    // VOLTAR CARD
 
     flipToFrontController2 = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
+        vsync: this, duration: Duration(milliseconds: 280));
     flipToFrontAnimation2 =
         Tween(begin: 0.0, end: 3.14 / 2).animate(flipToFrontController2)
           ..addListener(() {
             setState(() {
-              flipToBackOpacity = 1.0;
               flipToFront = flipToFrontAnimation2.value;
-              flipToBackController2.forward();
+              if (flipToFrontAnimation2.isCompleted) {
+                flipToBackOpacity = 1.0;
+                flipToFrontOpacity = 0.0;
+                flipToBackController2.forward();
+              }
             });
           });
 
     flipToBackController2 = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 2000));
+        vsync: this, duration: Duration(milliseconds: 280));
     flipToBackAnimation2 =
-    Tween(begin: -3.14 / 2, end: 0.0).animate(flipToBackController2)
-      ..addListener(() {
-        setState(() {
-          flipToBack = flipToBackAnimation2.value;
+        Tween(begin: -3.14 / 2, end: 0.0).animate(flipToBackController2)
+          ..addListener(() {
+            setState(() {
+              flipToBack = flipToBackAnimation2.value;
 //          if (flipToBackAnimation2.isCompleted) {
 //            flipToBackOpacity = 0.0;
 //          }
-        });
-      });
+            });
+          })
+          ..addStatusListener((AnimationStatus status) {
+            if (status == AnimationStatus.completed) {
+              setState(() {
+                flipToBackController.reset();
+                flipToFrontController.reset();
+              });
+            }
+          });
 
-    // ------------------------------------------------
-
+    // DRAG
     slideBackAnimation = new AnimationController(
         duration: const Duration(milliseconds: 480), vsync: this)
       ..addListener(() => setState(() {
@@ -262,7 +281,6 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
               )),
         ),
         Transform(
-//            transform: Matrix4.rotationY(flipToBack),
             transform: Matrix4.identity()
               ..setEntry(3, 2, 0.001)
               ..rotateY(flipToBack),

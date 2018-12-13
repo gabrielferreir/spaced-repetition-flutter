@@ -6,6 +6,7 @@ import './router/slide_router_right.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Home',
+  debugShowCheckedModeBanner: false,
   initialRoute: '/',
   routes: {
     '/': (context) => HomePage(),
