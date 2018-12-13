@@ -1,54 +1,5 @@
 import 'package:flutter/material.dart';
 
-class CardPage extends StatefulWidget {
-  @override
-  _CardPageState createState() => _CardPageState();
-}
-
-class _CardPageState extends State<CardPage> {
-  _gerateList() {
-    List<Widget> list = [];
-    for (var i = 0; i < 1; i++) {
-      list.add(MemoryCard(
-        index: i,
-      ));
-    }
-    return list;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        title: Text('Card 0001'),
-      ),
-      backgroundColor: Colors.blueGrey,
-      body: Container(
-        child: Container(
-          margin: EdgeInsets.all(16.0),
-          constraints: BoxConstraints.expand(),
-          child: Stack(
-            children: _gerateList(),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MemoryCard extends StatefulWidget {
-  int index;
-
-  MemoryCard({int this.index}) {
-    this.index = index;
-  }
-
-  @override
-  _MemoryCardState createState() => _MemoryCardState(index: index);
-}
-
 class ItemCard {
   String title;
   String description;
@@ -56,10 +7,30 @@ class ItemCard {
   ItemCard({this.title, this.description});
 }
 
-class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
-  List<ItemCard> cards = [];
-  bool front = true;
-  num index;
+class Flip extends StatefulWidget {
+  Widget front;
+  Widget back;
+
+  Flip({Widget front, Widget back}) {
+    this.front = front;
+    this.back = back;
+    print("INICIAL");
+    print(this.front);
+  }
+
+  @override
+  _FlipState createState() => _FlipState(front: front, back: back);
+}
+
+class _FlipState extends State<Flip> with TickerProviderStateMixin {
+  Widget front;
+  Widget back;
+
+  _FlipState({Widget front, Widget back}) {
+    this.front = front;
+    this.back = back;
+    print(this.front);
+  }
 
   Offset cardOffset = const Offset(0.0, 0.0);
   Offset dragStart;
@@ -150,9 +121,6 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
           ..addListener(() {
             setState(() {
               flipToBack = flipToBackAnimation2.value;
-//          if (flipToBackAnimation2.isCompleted) {
-//            flipToBackOpacity = 0.0;
-//          }
             });
           })
           ..addStatusListener((AnimationStatus status) {
@@ -191,19 +159,6 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  _MemoryCardState({int index}) {
-    this.index = index;
-    var a = ItemCard(title: 'Pazuzu 01', description: 'Description 01');
-    var b = ItemCard(title: 'Pazuzu 02', description: 'Description 02');
-    var c = ItemCard(title: 'Pazuzu 03', description: 'Description 03');
-    var d = ItemCard(title: 'Pazuzu 04', description: 'Description 04');
-
-    this.cards.add(a);
-    this.cards.add(b);
-    this.cards.add(c);
-    this.cards.add(d);
-  }
-
   void _onPanStart(DragStartDetails details) {
     this.dragStart = details.globalPosition;
   }
@@ -230,18 +185,20 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Transform(
-      transform: Matrix4.translationValues(cardOffset.dx, cardOffset.dy, 0.0),
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onPanStart: _onPanStart,
-        onPanUpdate: _onPanUpdate,
-        onPanEnd: _onPanEnd,
-        child: Stack(
-          children: <Widget>[_Card(), _controls(), _cardButton()],
-        ),
-      ),
+    return
+//      Transform(
+//      transform: Matrix4.translationValues(cardOffset.dx, cardOffset.dy, 0.0),
+//      alignment: Alignment.center,
+//      child: GestureDetector(
+//        onPanStart: _onPanStart,
+//        onPanUpdate: _onPanUpdate,
+//        onPanEnd: _onPanEnd,
+//        child:
+        Stack(
+      children: <Widget>[_Card(), _controls()],
     );
+//      ),
+//    );
   }
 
   Widget _Card() {
@@ -287,56 +244,10 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
             alignment: Alignment.center,
             child: Opacity(
               opacity: flipToBackOpacity,
-              child: Card(
-                  elevation: 2.0,
-                  child: Container(
-                    child: InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 0.0, vertical: 8.0),
-                                child: Text(this.cards[this.index].title,
-                                    style: TextStyle(fontSize: 32.0)),
-                              ),
-                              Text(
-                                this.cards[this.index].description,
-                                style: TextStyle(fontSize: 16.0),
-                              )
-                            ],
-                          ),
-                        )),
-                    constraints: BoxConstraints.expand(),
-                  )),
+              child: Card(elevation: 2.0, child: front),
             )),
       ],
       fit: StackFit.expand,
-    );
-  }
-
-  Widget _cardButton() {
-    return Positioned(
-      child: IconButton(
-          icon: Icon(Icons.info, size: 36.0),
-          onPressed: () {
-            setState(() {
-              if (this.front) {
-                this.front = false;
-              } else {
-                if (this.index < 3) {
-                  this.index = this.index + 1;
-                } else {
-                  this.index = 0;
-                }
-                this.front = true;
-              }
-            });
-          }),
-      bottom: 16.0,
-      right: 16.0,
     );
   }
 
@@ -372,17 +283,12 @@ class _MemoryCardState extends State<MemoryCard> with TickerProviderStateMixin {
 
   _next() {
     print('next()');
-//    setState(() {
-//      this.front = false;
-//    });
     flipToBackController.forward();
   }
 
   _prev() {
     print('prev');
     flipToFrontController2.forward();
-//    setState(() {
-//      this.front = true;
-//    });
+    ;
   }
 }

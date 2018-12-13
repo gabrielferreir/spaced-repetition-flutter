@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../router/slide_router_right.dart';
-import '../home.dart';
-import '../deck.dart';
+import 'package:tg/screens/home/home.page.dart';
+import 'package:tg/screens/deck/deck.page.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override

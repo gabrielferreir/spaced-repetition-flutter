@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import './components/drawer.dart';
-import './router/slide_router_right.dart';
-import './card.dart';
+import '../../widgets/drawer.widget.dart';
+import '../../router/slide_router_right.dart';
+import 'package:tg/screens/card/card.page.dart';
 
 class DeckPage extends StatefulWidget {
   @override

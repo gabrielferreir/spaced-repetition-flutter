@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import './home.dart';
-import './deck.dart';
-import './card.dart';
-import './router/slide_router_right.dart';
+import 'package:tg/screens/home/home.page.dart';
+import 'package:tg/screens/deck/deck.page.dart';
+import 'package:tg/screens/card/card.page.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Home',
