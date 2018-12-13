@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 
-class ItemCard {
-  String title;
-  String description;
-
-  ItemCard({this.title, this.description});
-}
-
 class Flip extends StatefulWidget {
   Widget front;
   Widget back;
@@ -14,8 +7,6 @@ class Flip extends StatefulWidget {
   Flip({Widget front, Widget back}) {
     this.front = front;
     this.back = back;
-    print("INICIAL");
-    print(this.front);
   }
 
   @override
@@ -29,14 +20,7 @@ class _FlipState extends State<Flip> with TickerProviderStateMixin {
   _FlipState({Widget front, Widget back}) {
     this.front = front;
     this.back = back;
-    print(this.front);
   }
-
-  Offset cardOffset = const Offset(0.0, 0.0);
-  Offset dragStart;
-  Offset dragPosition;
-  Offset slideBackStart;
-  AnimationController slideBackAnimation;
 
   // FLIP TO GO
 
@@ -131,74 +115,19 @@ class _FlipState extends State<Flip> with TickerProviderStateMixin {
               });
             }
           });
-
-    // DRAG
-    slideBackAnimation = new AnimationController(
-        duration: const Duration(milliseconds: 480), vsync: this)
-      ..addListener(() => setState(() {
-            cardOffset = Offset.lerp(
-              slideBackStart,
-              const Offset(0.0, 0.0),
-              Curves.decelerate.transform(slideBackAnimation.value),
-            );
-          }))
-      ..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            dragStart = null;
-            slideBackStart = null;
-            dragPosition = Offset(0.00, 0.0);
-          });
-        }
-      });
   }
 
   @override
   void dispose() {
-    slideBackAnimation.dispose();
+//    slideBackAnimation.dispose();
     super.dispose();
-  }
-
-  void _onPanStart(DragStartDetails details) {
-    this.dragStart = details.globalPosition;
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    setState(() {
-      dragPosition = details.globalPosition;
-      cardOffset = dragPosition - dragStart;
-    });
-  }
-
-  void _onPanEnd(DragEndDetails details) {
-    final right = context.size.width * 0.6;
-    final left = context.size.width * -0.6;
-    if (cardOffset.dx > right) {
-      print('Arrastou pra direita');
-    } else if (cardOffset.dx < left) {
-      print('Arrastou pra esquerda');
-    }
-
-    slideBackStart = cardOffset;
-    slideBackAnimation.forward(from: 0.0);
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-//      Transform(
-//      transform: Matrix4.translationValues(cardOffset.dx, cardOffset.dy, 0.0),
-//      alignment: Alignment.center,
-//      child: GestureDetector(
-//        onPanStart: _onPanStart,
-//        onPanUpdate: _onPanUpdate,
-//        onPanEnd: _onPanEnd,
-//        child:
-        Stack(
+    return Stack(
       children: <Widget>[_Card(), _controls()],
     );
-//      ),
-//    );
   }
 
   Widget _Card() {
@@ -213,28 +142,7 @@ class _FlipState extends State<Flip> with TickerProviderStateMixin {
               opacity: flipToFrontOpacity,
               child: Card(
                 elevation: 2.0,
-                child: Container(
-                  child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 0.0, vertical: 8.0),
-                              child: Text('BACK',
-                                  style: TextStyle(fontSize: 32.0)),
-                            ),
-                            Text(
-                              'BACK',
-                              style: TextStyle(fontSize: 16.0),
-                            )
-                          ],
-                        ),
-                      )),
-                  constraints: BoxConstraints.expand(),
-                ),
+                child: back,
               )),
         ),
         Transform(
@@ -282,13 +190,10 @@ class _FlipState extends State<Flip> with TickerProviderStateMixin {
   }
 
   _next() {
-    print('next()');
     flipToBackController.forward();
   }
 
   _prev() {
-    print('prev');
     flipToFrontController2.forward();
-    ;
   }
 }
