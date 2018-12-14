@@ -1,14 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../widgets/flip.widget.dart';
-import '../../widgets/dragging.widget.dart';
-
-List<Widget> gerateList() {
-  List<Widget> list = [];
-  for (var i = 0; i < 3; i++) {
-    list.add(Dragging(child: Flip(front: Front(), back: Back())));
-  }
-  return list;
-}
 
 class Back extends StatelessWidget {
   @override

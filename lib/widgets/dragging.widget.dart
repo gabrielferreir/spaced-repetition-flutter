@@ -3,9 +3,13 @@ import '../screens/card/card.state.dart';
 
 class Dragging extends StatefulWidget {
   Widget child;
+  Function callback;
+  int index;
 
-  Dragging({Widget child}) {
+  Dragging({Widget child, Function callback, int index}) {
     this.child = child;
+    this.callback = callback;
+    this.index = index;
   }
 
   @override
@@ -94,19 +98,21 @@ class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
     final left = context.size.width * -0.6;
 
     if (cardOffset.dx > right) {
-      slideOutTween = new Tween(begin: cardOffset, end: dragVector * (2 * context.size.width));
+      slideOutTween = new Tween(
+          begin: cardOffset, end: dragVector * (2 * context.size.width));
       slideOutAnimation.forward(from: 0.0);
       print('Arrastou pra direita');
-
+      this.widget.callback(this.widget.index);
     } else if (cardOffset.dx < left) {
-      slideOutTween = new Tween(begin: cardOffset, end: dragVector * (2 * context.size.width));
+      slideOutTween = new Tween(
+          begin: cardOffset, end: dragVector * (2 * context.size.width));
       slideOutAnimation.forward(from: 0.0);
       print('Arrastou pra esquerda');
+      this.widget.callback(this.widget.index);
     } else {
       slideBackStart = cardOffset;
       slideBackAnimation.forward(from: 0.0);
     }
-
   }
 
   @override
@@ -121,4 +127,3 @@ class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
             child: child));
   }
 }
-
