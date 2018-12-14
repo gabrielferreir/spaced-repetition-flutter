@@ -77,7 +77,9 @@ class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    print('Dispose');
     slideBackAnimation.dispose();
+    slideOutAnimation.dispose();
     super.dispose();
   }
 
@@ -102,12 +104,14 @@ class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
           begin: cardOffset, end: dragVector * (2 * context.size.width));
       slideOutAnimation.forward(from: 0.0);
       print('Arrastou pra direita');
+//      super.dispose();
       this.widget.callback(this.widget.index);
     } else if (cardOffset.dx < left) {
       slideOutTween = new Tween(
           begin: cardOffset, end: dragVector * (2 * context.size.width));
       slideOutAnimation.forward(from: 0.0);
       print('Arrastou pra esquerda');
+//      super.dispose();
       this.widget.callback(this.widget.index);
     } else {
       slideBackStart = cardOffset;

@@ -119,7 +119,10 @@ class _FlipState extends State<Flip> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-//    slideBackAnimation.dispose();
+    flipToBackController.dispose();
+    flipToBackController2.dispose();
+    flipToFrontController.dispose();
+    flipToFrontController2.dispose();
     super.dispose();
   }
 

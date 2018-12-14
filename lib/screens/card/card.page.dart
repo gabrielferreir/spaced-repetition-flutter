@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import './card.state.dart';
 import '../../widgets/flip.widget.dart';
@@ -24,9 +25,7 @@ class _CardPageState extends State<CardPage> {
         child: Container(
           margin: EdgeInsets.all(16.0),
           constraints: BoxConstraints.expand(),
-          child: Stack(
-            children: list,
-          ),
+          child: Stack(children: list),
         ),
       ),
     );
@@ -37,20 +36,22 @@ class _CardPageState extends State<CardPage> {
     this.list = gerateList();
   }
 
-  void callback(index) {
+  void callback(int index) {
+    List<Widget> newList = [];
     print('call $index');
-//    setState(() {
-    list.removeAt(index);
+//    print(list[index]);
+//    var timer = new Timer(const Duration(milliseconds: 1000), () {
+      setState(() {
+        list = List.from(newList);
+      });
 //    });
   }
 
   List<Widget> gerateList() {
     List<Widget> list = [];
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < 2; i++) {
       list.add(Dragging(
-          child: Flip(front: Front(), back: Back()),
-          callback: this.callback,
-          index: i));
+          child: Flip(front: Front(), back: Back()), callback: this.callback));
     }
     return list;
   }
