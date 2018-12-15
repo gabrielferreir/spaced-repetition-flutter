@@ -4,12 +4,10 @@ import '../screens/card/card.state.dart';
 class Dragging extends StatefulWidget {
   Widget child;
   Function callback;
-  int index;
 
-  Dragging({Widget child, Function callback, int index}) {
+  Dragging({Widget child, Function callback, Key key}) : super(key: key) {
     this.child = child;
     this.callback = callback;
-    this.index = index;
   }
 
   @override
@@ -18,6 +16,10 @@ class Dragging extends StatefulWidget {
 
 class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
   Widget child;
+  int side;
+
+  // 1 LEFT
+  // 2 RIGHT
 
   _DraggingState({Widget child}) {
     this.child = child;
@@ -70,6 +72,7 @@ class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
             slideOutTween = null;
             dragPosition = null;
             cardOffset = const Offset(0.0, 0.0);
+            this.widget.callback(this.widget.key);
           });
         }
       });
@@ -77,7 +80,6 @@ class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    print('Dispose');
     slideBackAnimation.dispose();
     slideOutAnimation.dispose();
     super.dispose();
@@ -104,15 +106,17 @@ class _DraggingState extends State<Dragging> with TickerProviderStateMixin {
           begin: cardOffset, end: dragVector * (2 * context.size.width));
       slideOutAnimation.forward(from: 0.0);
       print('Arrastou pra direita');
-//      super.dispose();
-      this.widget.callback(this.widget.index);
+      setState(() {
+        this.side = 2;
+      });
     } else if (cardOffset.dx < left) {
       slideOutTween = new Tween(
           begin: cardOffset, end: dragVector * (2 * context.size.width));
       slideOutAnimation.forward(from: 0.0);
       print('Arrastou pra esquerda');
-//      super.dispose();
-      this.widget.callback(this.widget.index);
+      setState(() {
+        this.side = 1;
+      });
     } else {
       slideBackStart = cardOffset;
       slideBackAnimation.forward(from: 0.0);

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import './card.state.dart';
 import '../../widgets/flip.widget.dart';
@@ -10,7 +9,7 @@ class CardPage extends StatefulWidget {
 }
 
 class _CardPageState extends State<CardPage> {
-  List<Widget> list;
+  List<Widget> list = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +35,33 @@ class _CardPageState extends State<CardPage> {
     this.list = gerateList();
   }
 
-  void callback(int index) {
-    List<Widget> newList = [];
-    print('call $index');
-//    print(list[index]);
-//    var timer = new Timer(const Duration(milliseconds: 1000), () {
-      setState(() {
-        list = List.from(newList);
-      });
-//    });
+  void callback(Key key) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].key == key) {
+        setState(() {
+          list.removeAt(i);
+          list = List.from(list);
+        });
+      }
+    }
   }
 
   List<Widget> gerateList() {
     List<Widget> list = [];
     for (var i = 0; i < 2; i++) {
-      list.add(Dragging(
-          child: Flip(front: Front(), back: Back()), callback: this.callback));
+      list.add(
+        Dragging(
+          child: Flip(
+              front: Front(
+                title: 'Card $i',
+              ),
+              back: Back(
+                title: 'Back $i',
+              )),
+          callback: this.callback,
+          key: Key("card$i"),
+        ),
+      );
     }
     return list;
   }

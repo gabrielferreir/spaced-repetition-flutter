@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Back extends StatelessWidget {
+  String title;
+
+  Back({this.title});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,7 +17,7 @@ class Back extends StatelessWidget {
               child: Text('BACK', style: TextStyle(fontSize: 32.0)),
             ),
             Text(
-              'BACK',
+              this.title,
               style: TextStyle(fontSize: 16.0),
             )
           ],
@@ -25,6 +29,10 @@ class Back extends StatelessWidget {
 }
 
 class Front extends StatelessWidget {
+  String title;
+
+  Front({this.title});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,7 +45,7 @@ class Front extends StatelessWidget {
               child: Text('FRONT', style: TextStyle(fontSize: 32.0)),
             ),
             Text(
-              'FRONT 2',
+              this.title,
               style: TextStyle(fontSize: 16.0),
             )
           ],
