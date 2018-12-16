@@ -19,7 +19,7 @@ class _CardPageState extends State<CardPage> {
         elevation: 0.0,
         title: Text('Card 0001'),
       ),
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Theme.of(context).primaryColor,
       body: Container(
         child: Container(
           margin: EdgeInsets.all(16.0),

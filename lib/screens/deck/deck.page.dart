@@ -9,14 +9,46 @@ class DeckPage extends StatefulWidget {
 }
 
 class _DeckPageState extends State<DeckPage> {
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerWidget(),
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        title: Text('Baralhos'),
+      key: _scaffoldKey,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        elevation: 4.0,
+        onPressed: () {},
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        clipBehavior: Clip.antiAlias,
+        notchMargin: 8.0,
+        shape: CircularNotchedRectangle(),
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.menu, color: Colors.white),
+              onPressed: () {
+                _scaffoldKey.currentState.openDrawer();
+              },
+            ),
+            Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: Icon(Icons.settings, color: Colors.white),
+                ))
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        title: Text('Baralhos'),
+        automaticallyImplyLeading: false,
+      ),
+      drawer: DrawerWidget(),
       body: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.all(8.0),

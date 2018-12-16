@@ -22,7 +22,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               children: <Widget>[Text('TG')],
             ),
             decoration: BoxDecoration(
-              color: Colors.blueGrey,
+              color: Theme.of(context).accentColor,
             ),
           ),
           ListTile(
