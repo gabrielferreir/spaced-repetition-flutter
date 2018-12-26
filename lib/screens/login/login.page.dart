@@ -91,12 +91,17 @@ class _email extends StatefulWidget {
 
 class __emailState extends State<_email> {
   bool validateInClient = true;
+  bool dirty = false;
+  String lastValue = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     this.widget.emailController.addListener(() {
       setState(() {
+        if (lastValue != widget.emailController.text) {
+          dirty = true;
+        }
         validateInClient = true;
       });
     });
@@ -142,6 +147,7 @@ class __emailState extends State<_email> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(48.0)),
                           onPressed: () {
+                            dirty = true;
                             if (_formKey.currentState.validate()) {
                               validateInClient = !validateInClient;
                               if (_formKey.currentState.validate()) {
@@ -180,10 +186,10 @@ class __emailState extends State<_email> {
   }
 
   validatorClient(String value) {
-    if (value.isEmpty) {
+    if (value.isEmpty && dirty) {
       return 'Email é obrigatorio';
-    } else if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(value)) {
+    } else if (dirty &&
+        !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
       return 'Digite um email válido';
     }
   }
@@ -203,12 +209,17 @@ class _pass extends StatefulWidget {
 
 class __passState extends State<_pass> {
   bool validateInClient = true;
+  bool dirty = false;
+  String lastValue = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     this.widget.passController.addListener(() {
       setState(() {
+        if (lastValue != widget.passController.text) {
+          dirty = true;
+        }
         validateInClient = true;
       });
     });
@@ -293,6 +304,9 @@ class __passState extends State<_pass> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(48.0)),
                           onPressed: () {
+                            setState(() {
+                              dirty = true;
+                            });
                             if (_formKey.currentState.validate()) {
                               validateInClient = !validateInClient;
                               if (_formKey.currentState.validate()) {
@@ -323,9 +337,9 @@ class __passState extends State<_pass> {
   }
 
   validatorClient(String value) {
-    if (value.isEmpty) {
+    if (value.isEmpty && dirty) {
       return 'Senha é obrigatoria';
-    } else if (value.length < 8) {
+    } else if (dirty && value.length < 8) {
       return 'A senha deve conter no minimo 8 caracteres';
     }
   }
