@@ -11,7 +11,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final controller = new PageController();
   final emailController = TextEditingController();
+  final emailFocusNode = FocusNode();
   final passController = TextEditingController();
+  final passFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +43,8 @@ class _LoginPageState extends State<LoginPage> {
             pageSnapping: false,
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              _email(emailController, _nextPage),
-              _pass(passController, _prevPage),
+              _email(emailController, emailFocusNode, _nextPage),
+              _pass(passController, passFocusNode, _prevPage),
             ],
           ),
         )
@@ -55,25 +64,29 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _nextPage() {
-    controller.nextPage(
+  _nextPage() async {
+    await controller.nextPage(
         duration: Duration(milliseconds: 280), curve: Curves.ease);
+    FocusScope.of(context).requestFocus(passFocusNode);
   }
 
-  _prevPage() {
-    controller.previousPage(
+  _prevPage() async {
+    await controller.previousPage(
         duration: Duration(milliseconds: 280), curve: Curves.ease);
+    FocusScope.of(context).requestFocus(emailFocusNode);
   }
 }
 
 class _email extends StatefulWidget {
   TextEditingController emailController;
   Function callback;
+  FocusNode focusNode;
 
   @override
   __emailState createState() => __emailState();
 
-  _email(TextEditingController this.emailController, Function this.callback);
+  _email(TextEditingController this.emailController, FocusNode this.focusNode,
+      Function this.callback);
 }
 
 class __emailState extends State<_email> {
@@ -103,6 +116,7 @@ class __emailState extends State<_email> {
                       key: _formKey,
                       child: TextFormField(
                           autofocus: true,
+                          focusNode: this.widget.focusNode,
                           controller: this.widget.emailController,
                           decoration: InputDecoration(labelText: 'Email'),
                           autovalidate: validateInClient,
@@ -178,11 +192,13 @@ class __emailState extends State<_email> {
 class _pass extends StatefulWidget {
   TextEditingController passController;
   Function callback;
+  FocusNode focusNode;
 
   @override
   __passState createState() => __passState();
 
-  _pass(TextEditingController this.passController, Function this.callback);
+  _pass(TextEditingController this.passController, FocusNode this.focusNode,
+      Function this.callback);
 }
 
 class __passState extends State<_pass> {
@@ -250,7 +266,7 @@ class __passState extends State<_pass> {
                   child: Form(
                     key: _formKey,
                     child: TextFormField(
-                        autofocus: true,
+                        focusNode: this.widget.focusNode,
                         controller: this.widget.passController,
                         decoration: InputDecoration(labelText: 'Senha'),
                         autovalidate: validateInClient,
