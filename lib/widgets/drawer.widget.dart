@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../router/slide_router_right.dart';
 import 'package:tg/screens/home/home.page.dart';
 import 'package:tg/screens/deck/deck.page.dart';
+import 'package:tg/screens/login/login.page.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -39,6 +41,15 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   context, SlideRouterRight(widget: DeckPage()));
             },
           ),
+          ListTile(
+            title: Text('Sair'),
+            onTap: () async {
+              final _storage = new FlutterSecureStorage();
+              await _storage.delete(key: 'token');
+              Navigator.pushReplacement(
+                  context, SlideRouterRight(widget: LoginPage()));
+            },
+          )
 //          ListTile(
 //            title: Text('Card'),
 //            onTap: () {

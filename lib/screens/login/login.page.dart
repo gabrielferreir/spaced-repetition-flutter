@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tg/router/slide_router_right.dart';
 import 'package:tg/screens/home/home.page.dart';
 
@@ -40,6 +41,18 @@ class _LoginPageState extends State<LoginPage> {
         )
       ],
     ));
+  }
+
+  @override
+  void initState() {
+    final _storage = new FlutterSecureStorage();
+    final token = _storage.read(key: 'token');
+    token.then((value) {
+      if (value != null) {
+        Navigator.pushReplacement(
+            context, SlideRouterRight(widget: HomePage()));
+      }
+    });
   }
 
   _nextPage() {
@@ -147,14 +160,12 @@ class __emailState extends State<_email> {
   }
 
   validatorServer(String value) {
-    print('validatorServer');
     if (value != 'pazuzu@gmail.com') {
       return 'Digite um email existente';
     }
   }
 
   validatorClient(String value) {
-    print('validatorClient');
     if (value.isEmpty) {
       return 'Email é obrigatorio';
     } else if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -207,10 +218,25 @@ class __passState extends State<_pass> {
                         onPressed: () {
                           this.widget.callback();
                         }),
-                    Text(
-                      'gabriel.ferreira@outlook.com.br',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
+                    CircleAvatar(
+                      child: Text('G'),
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(left: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Gabriel Ferreira',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'gabriel.ferreira@outlook.com.br',
+                              style: TextStyle(),
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               )
@@ -254,6 +280,7 @@ class __passState extends State<_pass> {
                             if (_formKey.currentState.validate()) {
                               validateInClient = !validateInClient;
                               if (_formKey.currentState.validate()) {
+                                saveInStorage(widget.passController.text);
                                 Navigator.pushReplacement(context,
                                     SlideRouterRight(widget: HomePage()));
                               }
@@ -285,5 +312,10 @@ class __passState extends State<_pass> {
     } else if (value.length < 8) {
       return 'A senha deve conter no minimo 8 caracteres';
     }
+  }
+
+  saveInStorage(String pass) {
+    final _storage = new FlutterSecureStorage();
+    _storage.write(key: 'token', value: pass);
   }
 }
