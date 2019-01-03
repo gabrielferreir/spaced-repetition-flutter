@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './card.state.dart';
-import '../../widgets/flip.widget.dart';
-import '../../widgets/dragging.widget.dart';
+import 'package:tg/ui/common/flip.widget.dart';
+import 'package:tg/ui/common/dragging.widget.dart';
 
 class CardPage extends StatefulWidget {
   @override

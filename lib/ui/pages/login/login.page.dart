@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tg/router/slide_router_right.dart';
-import 'package:tg/screens/home/home.page.dart';
-import 'package:tg/screens/login/email.widget.dart';
-import 'package:tg/screens/login/pass.widget.dart';
+import 'package:tg/ui/common/slide_router_right.dart';
+import 'package:tg/ui/pages/home/home.page.dart';
+import 'package:tg/ui/pages/login/pass.widget.dart';
+import 'package:tg/ui/pages/login/email.widget.dart';
 
 class LoginPage extends StatefulWidget {
   @override

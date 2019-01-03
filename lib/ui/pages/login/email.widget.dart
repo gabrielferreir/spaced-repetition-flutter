@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tg/screens/register/register.page.dart';
-import 'package:tg/router/slide_router_right.dart';
+import 'package:tg/ui/pages/register/register.page.dart';
+import 'package:tg/ui/common/slide_router_right.dart';
 
 class Email extends StatefulWidget {
   TextEditingController emailController;

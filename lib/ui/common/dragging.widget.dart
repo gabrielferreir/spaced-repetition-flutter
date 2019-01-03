@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../screens/card/card.state.dart';
 
 class Dragging extends StatefulWidget {
   Widget child;

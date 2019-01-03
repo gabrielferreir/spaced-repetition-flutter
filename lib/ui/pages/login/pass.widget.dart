@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tg/router/slide_router_right.dart';
-import 'package:tg/screens/home/home.page.dart';
+import 'package:tg/ui/common/slide_router_right.dart';
+import 'package:tg/ui/pages/home/home.page.dart';
 
 class Pass extends StatefulWidget {
   TextEditingController passController;
