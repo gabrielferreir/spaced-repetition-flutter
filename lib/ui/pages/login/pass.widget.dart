@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tg/ui/common/slide_router_right.dart';
 import 'package:tg/ui/pages/home/home.page.dart';
+import './login_bloc_provider.dart';
 
 class Pass extends StatefulWidget {
-  TextEditingController passController;
-  Function callback;
-  FocusNode focusNode;
+//  TextEditingController passController;
+//  Function callback;
+//  FocusNode focusNode;
 
   @override
   _PassState createState() => _PassState();
 
-  Pass(TextEditingController this.passController, FocusNode this.focusNode,
-      Function this.callback);
+  Pass();
 }
 
 class _PassState extends State<Pass> {
@@ -20,17 +20,16 @@ class _PassState extends State<Pass> {
   bool dirty = false;
   String lastValue = '';
   final _formKey = GlobalKey<FormState>();
+  LoginBloc bloc;
+
+  @override
+  void didChangeDependencies() {
+    bloc = LoginBlocProvider.of(context);
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
-    this.widget.passController.addListener(() {
-      setState(() {
-        if (lastValue != widget.passController.text) {
-          dirty = true;
-        }
-        validateInClient = true;
-      });
-    });
   }
 
   @override
@@ -51,7 +50,7 @@ class _PassState extends State<Pass> {
                     IconButton(
                         icon: Icon(Icons.arrow_back),
                         onPressed: () {
-                          this.widget.callback();
+                          bloc.prevPage();
                         }),
                     CircleAvatar(
                       child: Text('G'),
@@ -85,8 +84,8 @@ class _PassState extends State<Pass> {
                   child: Form(
                     key: _formKey,
                     child: TextFormField(
-                        focusNode: this.widget.focusNode,
-                        controller: this.widget.passController,
+                        focusNode: bloc.passFocusNode,
+                        controller: bloc.passController,
                         decoration: InputDecoration(labelText: 'Senha'),
                         autovalidate: validateInClient,
                         validator: (value) {
@@ -118,7 +117,7 @@ class _PassState extends State<Pass> {
                             if (_formKey.currentState.validate()) {
                               validateInClient = !validateInClient;
                               if (_formKey.currentState.validate()) {
-                                saveInStorage(widget.passController.text);
+                                saveInStorage(bloc.passController.text);
                                 Navigator.pushReplacement(context,
                                     SlideRouterRight(widget: HomePage()));
                               }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tg/ui/common/slide_router_right.dart';
-import 'package:tg/ui/pages/home/home.page.dart';
 import 'package:tg/ui/pages/login/pass.widget.dart';
 import 'package:tg/ui/pages/login/email.widget.dart';
+import './login_bloc_provider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,16 +9,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final controller = new PageController();
-  final emailController = TextEditingController();
-  final emailFocusNode = FocusNode();
-  final passController = TextEditingController();
-  final passFocusNode = FocusNode();
+  LoginBloc bloc;
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      bloc.checkLogin(context);
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    bloc = LoginBlocProvider.of(context);
+    super.didChangeDependencies();
+  }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passController.dispose();
+    bloc.dispose();
     super.dispose();
   }
 
@@ -41,40 +47,16 @@ class _LoginPageState extends State<LoginPage> {
         ),
         Expanded(
           child: PageView(
-            controller: controller,
+            controller: bloc.pageController,
             pageSnapping: false,
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              Email(emailController, emailFocusNode, _nextPage),
-              Pass(passController, passFocusNode, _prevPage)
+              Email(),
+              Pass(),
             ],
           ),
         )
       ],
     ));
-  }
-
-  @override
-  void initState() {
-    final _storage = new FlutterSecureStorage();
-    final token = _storage.read(key: 'token');
-    token.then((value) {
-      if (value != null) {
-        Navigator.pushReplacement(
-            context, SlideRouterRight(widget: HomePage()));
-      }
-    });
-  }
-
-  _nextPage() async {
-    await controller.nextPage(
-        duration: Duration(milliseconds: 280), curve: Curves.ease);
-    FocusScope.of(context).requestFocus(passFocusNode);
-  }
-
-  _prevPage() async {
-    await controller.previousPage(
-        duration: Duration(milliseconds: 280), curve: Curves.ease);
-    FocusScope.of(context).requestFocus(emailFocusNode);
   }
 }

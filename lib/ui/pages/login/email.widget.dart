@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:tg/ui/pages/register/register.page.dart';
 import 'package:tg/ui/common/slide_router_right.dart';
+import './login_bloc_provider.dart';
 
 class Email extends StatefulWidget {
-  TextEditingController emailController;
-  Function callback;
-  FocusNode focusNode;
-
   @override
   _EmailState createState() => _EmailState();
 
-  Email(TextEditingController this.emailController, FocusNode this.focusNode,
-      Function this.callback);
+  Email();
 }
 
 class _EmailState extends State<Email> {
-  bool validateInClient = true;
-  bool dirty = false;
-  String lastValue = '';
+//  bool validateInClient = true;
+//  bool dirty = false;
+//  String lastValue = '';
   final _formKey = GlobalKey<FormState>();
+  LoginBloc bloc;
+
+  @override
+  void didChangeDependencies() {
+    bloc = LoginBlocProvider.of(context);
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
-    this.widget.emailController.addListener(() {
-      setState(() {
-        if (lastValue != widget.emailController.text) {
-          dirty = true;
-        }
-        validateInClient = true;
-      });
-    });
+//    print('Aqui ${bloc.emailController}');
+//    bloc.emailController.addListener(() {
+//      setState(() {
+//        if (lastValue != bloc.emailController.text) {
+//          dirty = true;
+//        }
+//        validateInClient = true;
+//      });
+//    });
   }
 
   @override
@@ -44,17 +48,23 @@ class _EmailState extends State<Email> {
                     padding: EdgeInsets.all(16.0),
                     child: Form(
                       key: _formKey,
-                      child: TextFormField(
-                          autofocus: true,
-                          focusNode: this.widget.focusNode,
-                          controller: this.widget.emailController,
-                          decoration: InputDecoration(labelText: 'Email'),
-                          autovalidate: validateInClient,
-                          validator: (value) {
-                            return validateInClient
-                                ? validatorClient(value)
-                                : validatorServer(value);
-                          }),
+                      child: StreamBuilder(
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            return TextFormField(
+                                autofocus: true,
+                                focusNode: bloc.emailFocusNode,
+                                controller: bloc.emailController,
+                                decoration: InputDecoration(labelText: 'Email'),
+                                autovalidate: snapshot.data,
+                                validator: (value) {
+                                  return snapshot.data
+                                      ? bloc.emailValidatorClient(value)
+                                      : bloc.emailValidatorServer(value);
+                                });
+                          },
+                          initialData: false,
+                          stream: bloc.streamEmailValidateInClient),
                     )),
               ),
             ],
@@ -72,11 +82,11 @@ class _EmailState extends State<Email> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(48.0)),
                           onPressed: () {
-                            dirty = true;
+                            bloc.setEmailDirty(true);
                             if (_formKey.currentState.validate()) {
-                              validateInClient = !validateInClient;
+                              bloc.toogleValidateEmail();
                               if (_formKey.currentState.validate()) {
-                                widget.callback();
+                                bloc.nextPage();
                               }
                             }
                           },
@@ -86,7 +96,7 @@ class _EmailState extends State<Email> {
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
-                      ))),
+                      )))
             ],
           ),
           Row(
@@ -98,8 +108,8 @@ class _EmailState extends State<Email> {
                 child: GestureDetector(
                   child: Text('Desejo me cadastrar'),
                   onTap: () {
-                    Navigator.push(context,
-                        SlideRouterRight(widget: RegisterPage()));
+                    Navigator.push(
+                        context, SlideRouterRight(widget: RegisterPage()));
                   },
                 ),
               )
@@ -110,18 +120,6 @@ class _EmailState extends State<Email> {
     );
   }
 
-  validatorServer(String value) {
-    if (value != 'pazuzu@gmail.com') {
-      return 'Digite um email existente';
-    }
-  }
 
-  validatorClient(String value) {
-    if (value.isEmpty && dirty) {
-      return 'Email é obrigatorio';
-    } else if (dirty &&
-        !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
-      return 'Digite um email válido';
-    }
-  }
+
 }
