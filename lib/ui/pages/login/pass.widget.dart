@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tg/ui/common/slide_router_right.dart';
-import 'package:tg/ui/pages/home/home.page.dart';
 import './login_bloc_provider.dart';
 
 class Pass extends StatefulWidget {
-//  TextEditingController passController;
-//  Function callback;
-//  FocusNode focusNode;
-
   @override
   _PassState createState() => _PassState();
 
@@ -16,20 +9,12 @@ class Pass extends StatefulWidget {
 }
 
 class _PassState extends State<Pass> {
-  bool validateInClient = true;
-  bool dirty = false;
-  String lastValue = '';
-  final _formKey = GlobalKey<FormState>();
   LoginBloc bloc;
 
   @override
   void didChangeDependencies() {
     bloc = LoginBlocProvider.of(context);
     super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
   }
 
   @override
@@ -50,7 +35,7 @@ class _PassState extends State<Pass> {
                     IconButton(
                         icon: Icon(Icons.arrow_back),
                         onPressed: () {
-                          bloc.prevPage();
+                          bloc.prevPage(context);
                         }),
                     CircleAvatar(
                       child: Text('G'),
@@ -82,17 +67,20 @@ class _PassState extends State<Pass> {
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Form(
-                    key: _formKey,
-                    child: TextFormField(
-                        focusNode: bloc.passFocusNode,
-                        controller: bloc.passController,
-                        decoration: InputDecoration(labelText: 'Senha'),
-                        autovalidate: validateInClient,
-                        validator: (value) {
-                          return validateInClient
-                              ? validatorClient(value)
-                              : validatorServer(value);
-                        }),
+                    key: bloc.formPass,
+                    child: StreamBuilder(
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        return TextFormField(
+                            focusNode: bloc.passFocusNode,
+                            controller: bloc.passController,
+                            decoration: InputDecoration(labelText: 'Senha'),
+                            autovalidate: snapshot.data,
+                            obscureText: true,
+                            validator: bloc.passValidate);
+                      },
+                      stream: bloc.streamPassValidateInClient,
+                      initialData: true,
+                    ),
                   ),
                 ),
               ),
@@ -111,17 +99,7 @@ class _PassState extends State<Pass> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(48.0)),
                           onPressed: () {
-                            setState(() {
-                              dirty = true;
-                            });
-                            if (_formKey.currentState.validate()) {
-                              validateInClient = !validateInClient;
-                              if (_formKey.currentState.validate()) {
-                                saveInStorage(bloc.passController.text);
-                                Navigator.pushReplacement(context,
-                                    SlideRouterRight(widget: HomePage()));
-                              }
-                            }
+                            bloc.passSubmitValidate(context);
                           },
                           color: Theme.of(context).primaryColor,
                           child: Text(
@@ -135,24 +113,5 @@ class _PassState extends State<Pass> {
         ],
       ),
     );
-  }
-
-  validatorServer(String value) {
-    if (value != 'teste123') {
-      return 'Digite uma senha válida';
-    }
-  }
-
-  validatorClient(String value) {
-    if (value.isEmpty && dirty) {
-      return 'Senha é obrigatoria';
-    } else if (dirty && value.length < 8) {
-      return 'A senha deve conter no minimo 8 caracteres';
-    }
-  }
-
-  saveInStorage(String pass) {
-    final _storage = new FlutterSecureStorage();
-    _storage.write(key: 'token', value: pass);
   }
 }

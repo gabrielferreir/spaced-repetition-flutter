@@ -7,44 +7,43 @@ import 'dart:async';
 class LoginBloc {
   final pageController = new PageController();
 
-  final emailController = TextEditingController();
-  final emailFocusNode = FocusNode();
+  // Email
   bool _emailDirty = false;
   bool _emailValidateInClient = true;
+  final formEmail = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final emailFocusNode = FocusNode();
 
-  final StreamController<bool> _ctrlEmailDirty = StreamController<bool>();
-  final StreamController<bool> _ctrlEmailValidateInClient = StreamController<bool>();
+  final StreamController<bool> _ctrlEmailValidateInClient =
+      StreamController<bool>();
 
-  Stream<bool> get emailDirty => _ctrlEmailDirty.stream;
-  Stream<bool> get streamEmailValidateInClient => _ctrlEmailValidateInClient.stream;
+  Stream<bool> get streamEmailValidateInClient =>
+      _ctrlEmailValidateInClient.stream;
 
-  Sink<bool> get setEmailValidateInClient => _ctrlEmailValidateInClient.sink;
-
+  // Pass
+  bool _passDirty = false;
+  bool _passValidateInClient = true;
+  final formPass = GlobalKey<FormState>();
   final passController = TextEditingController();
   final passFocusNode = FocusNode();
-  bool passDirty = false;
-  String lastValuePass = '';
-  bool passValidateInClient = true;
+
+  final StreamController<bool> _ctrlPassValidateInClient =
+      StreamController<bool>();
+
+  Stream<bool> get streamPassValidateInClient =>
+      _ctrlPassValidateInClient.stream;
 
   LoginBloc() {
-    emailController.addListener(() {
-      if (emailController.text != '') {
-        _emailDirty = true;
-        _ctrlEmailDirty.add(_emailDirty);
-      }
-      _emailValidateInClient = true;
-      _ctrlEmailValidateInClient.add(_emailValidateInClient);
-    });
-
-    passController.addListener(() {
-      if (lastValuePass != passController.text) {
-        passDirty = true;
-      }
-      passValidateInClient = true;
-    });
+    _emailListenerDirty();
+    _passListenerDirty();
   }
 
-  checkLogin(BuildContext context) {
+  dispose() {
+    emailController.dispose();
+    passController.dispose();
+  }
+
+  void checkLogin(BuildContext context) {
     final _storage = new FlutterSecureStorage();
     final token = _storage.read(key: 'token');
     token.then((value) {
@@ -55,49 +54,108 @@ class LoginBloc {
     });
   }
 
-  nextPage() async {
+  void saveLogin(String pass) {
+    final _storage = new FlutterSecureStorage();
+    _storage.write(key: 'token', value: pass);
+  }
+
+  String emailValidate(String value) {
+    return _emailValidateInClient
+        ? _emailValidatorClient(value)
+        : _emailValidatorServer(value);
+  }
+
+  String passValidate(String value) {
+    return _passValidateInClient
+        ? _passValidatorClient(value)
+        : _passValidatorServer(value);
+  }
+
+  void emailSubmitValidate(BuildContext context) {
+    _emailDirty = true;
+    if (formEmail.currentState.validate()) {
+      _emailValidateInClient = !_emailValidateInClient;
+      _ctrlEmailValidateInClient.sink.add(_emailValidateInClient);
+      if (formEmail.currentState.validate()) {
+        nextPage(context);
+      }
+    }
+  }
+
+  void passSubmitValidate(BuildContext context) {
+    _passDirty = true;
+    if (formPass.currentState.validate()) {
+      _passValidateInClient = !_passValidateInClient;
+      if (formPass.currentState.validate()) {
+        saveLogin(passController.text);
+        Navigator.pushReplacement(
+            context, SlideRouterRight(widget: HomePage()));
+      }
+    }
+  }
+
+  void nextPage(BuildContext context) async {
     await pageController.nextPage(
         duration: Duration(milliseconds: 280), curve: Curves.ease);
-//    FocusScope.of(context).requestFocus(passFocusNode);
+    FocusScope.of(context).requestFocus(passFocusNode);
   }
 
-  prevPage() async {
+  void prevPage(BuildContext context) async {
     await pageController.previousPage(
         duration: Duration(milliseconds: 280), curve: Curves.ease);
-//    FocusScope.of(context).requestFocus(emailFocusNode);
+    FocusScope.of(context).requestFocus(emailFocusNode);
   }
 
-  focus(BuildContext context, FocusNode node) {
+  void focus(BuildContext context, FocusNode node) {
     FocusScope.of(context).requestFocus(node);
   }
 
-  setEmailDirty(bool value) {
-    _ctrlEmailDirty.sink.add(value);
-  }
-
-  toogleValidateEmail() {
-    _emailValidateInClient = !_emailValidateInClient;
-    _ctrlEmailValidateInClient.sink.add(_emailValidateInClient);
-  }
-
-  emailValidatorServer(String value) {
+  String _emailValidatorServer(String value) {
     if (value != 'pazuzu@gmail.com') {
       return 'Digite um email existente';
     }
   }
 
-  emailValidatorClient(String value) {
-//    if (value.isEmpty && dirty) {
+  String _emailValidatorClient(String value) {
     if (value.isEmpty && _emailDirty) {
       return 'Email é obrigatorio';
-    } else if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(value)) {
+    } else if (_emailDirty &&
+        !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
       return 'Digite um email válido';
     }
   }
 
-  dispose() {
-    emailController.dispose();
-    passController.dispose();
+  String _passValidatorServer(String value) {
+    if (value != 'teste123') {
+      return 'Digite uma senha válida';
+    }
+  }
+
+  String _passValidatorClient(String value) {
+    if (value.isEmpty && _passDirty) {
+      return 'Senha é obrigatoria';
+    } else if (_passDirty && value.length < 8) {
+      return 'A senha deve conter no minimo 8 caracteres';
+    }
+  }
+
+  void _emailListenerDirty() {
+    emailController.addListener(() {
+      if (emailController.text != '') {
+        _emailDirty = true;
+      }
+      _emailValidateInClient = true;
+      _ctrlEmailValidateInClient.add(_emailValidateInClient);
+    });
+  }
+
+  void _passListenerDirty() {
+    passController.addListener(() {
+      if (passController.text != '') {
+        _passDirty = true;
+      }
+      _passValidateInClient = true;
+      _ctrlPassValidateInClient.add(_passValidateInClient);
+    });
   }
 }

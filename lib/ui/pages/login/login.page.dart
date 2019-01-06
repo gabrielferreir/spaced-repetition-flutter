@@ -14,7 +14,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      bloc.checkLogin(context);
+      if (bloc != null) {
+        bloc.checkLogin(context);
+      }
     });
   }
 
@@ -26,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    bloc.dispose();
+//    bloc.dispose();
     super.dispose();
   }
 

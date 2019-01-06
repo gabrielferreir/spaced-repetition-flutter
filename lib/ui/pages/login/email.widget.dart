@@ -11,10 +11,6 @@ class Email extends StatefulWidget {
 }
 
 class _EmailState extends State<Email> {
-//  bool validateInClient = true;
-//  bool dirty = false;
-//  String lastValue = '';
-  final _formKey = GlobalKey<FormState>();
   LoginBloc bloc;
 
   @override
@@ -24,17 +20,7 @@ class _EmailState extends State<Email> {
   }
 
   @override
-  void initState() {
-//    print('Aqui ${bloc.emailController}');
-//    bloc.emailController.addListener(() {
-//      setState(() {
-//        if (lastValue != bloc.emailController.text) {
-//          dirty = true;
-//        }
-//        validateInClient = true;
-//      });
-//    });
-  }
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +33,7 @@ class _EmailState extends State<Email> {
                 child: Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Form(
-                      key: _formKey,
+                      key: bloc.formEmail,
                       child: StreamBuilder(
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
@@ -57,13 +43,9 @@ class _EmailState extends State<Email> {
                                 controller: bloc.emailController,
                                 decoration: InputDecoration(labelText: 'Email'),
                                 autovalidate: snapshot.data,
-                                validator: (value) {
-                                  return snapshot.data
-                                      ? bloc.emailValidatorClient(value)
-                                      : bloc.emailValidatorServer(value);
-                                });
+                                validator: bloc.emailValidate);
                           },
-                          initialData: false,
+                          initialData: true,
                           stream: bloc.streamEmailValidateInClient),
                     )),
               ),
@@ -82,13 +64,7 @@ class _EmailState extends State<Email> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(48.0)),
                           onPressed: () {
-                            bloc.setEmailDirty(true);
-                            if (_formKey.currentState.validate()) {
-                              bloc.toogleValidateEmail();
-                              if (_formKey.currentState.validate()) {
-                                bloc.nextPage();
-                              }
-                            }
+                            bloc.emailSubmitValidate(context);
                           },
                           color: Theme.of(context).primaryColor,
                           child: Text(
@@ -119,7 +95,4 @@ class _EmailState extends State<Email> {
       ),
     );
   }
-
-
-
 }
