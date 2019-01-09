@@ -4,6 +4,7 @@ import 'package:tg/ui/common/slide_router_right.dart';
 import 'package:tg/ui/pages/home/home.page.dart';
 import 'package:tg/ui/pages/deck/deck.page.dart';
 import 'package:tg/ui/pages/login/login.page.dart';
+import 'package:tg/ui/pages/login/login_bloc_provider.dart';
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -47,15 +48,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               final _storage = new FlutterSecureStorage();
               await _storage.delete(key: 'token');
               Navigator.pushReplacement(
-                  context, SlideRouterRight(widget: LoginPage()));
+                  context,
+                  SlideRouterRight(
+                      widget: LoginBlocProvider(
+                    child: LoginPage(),
+                  )));
             },
           )
-//          ListTile(
-//            title: Text('Card'),
-//            onTap: () {
-//              Navigator.push(context, SlideRouterRight(widget: CardPage()));
-//            },
-//          ),
         ],
       ),
     );
