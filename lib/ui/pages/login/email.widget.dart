@@ -19,10 +19,6 @@ class _EmailState extends State<Email> {
     super.didChangeDependencies();
   }
 
-  @override
-  void initState() {}
-
-  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(

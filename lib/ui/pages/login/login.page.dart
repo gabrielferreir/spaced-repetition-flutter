@@ -13,11 +13,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      if (bloc != null) {
-        bloc.checkLogin(context);
-      }
-    });
   }
 
   @override
@@ -28,12 +23,14 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-//    bloc.dispose();
+    bloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    bloc = LoginBlocProvider.of(context);
+    bloc.checkLogin(context);
     return Scaffold(
         body: Column(
       mainAxisSize: MainAxisSize.max,

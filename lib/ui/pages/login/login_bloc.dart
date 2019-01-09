@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tg/ui/common/slide_router_right.dart';
 import 'package:tg/ui/pages/home/home.page.dart';
+import 'package:rxdart/rxdart.dart';
 import 'dart:async';
 
 class LoginBloc {
@@ -14,8 +15,10 @@ class LoginBloc {
   final emailController = TextEditingController();
   final emailFocusNode = FocusNode();
 
-  final StreamController<bool> _ctrlEmailValidateInClient =
-      StreamController<bool>();
+  final StreamController<bool> _ctrlEmailDirty = BehaviorSubject<bool>();
+  final StreamController<bool> _ctrlEmailValidateInClient = BehaviorSubject<bool>();
+
+  Stream<bool> get emailDirty => _ctrlEmailDirty.stream;
 
   Stream<bool> get streamEmailValidateInClient =>
       _ctrlEmailValidateInClient.stream;
@@ -110,7 +113,23 @@ class LoginBloc {
     FocusScope.of(context).requestFocus(node);
   }
 
-  String _emailValidatorServer(String value) {
+  setEmailDirty(bool value) {
+    _ctrlEmailDirty.sink.add(value);
+  }
+
+  toogleValidateEmail() {
+    _emailValidateInClient = !_emailValidateInClient;
+    _ctrlEmailValidateInClient.sink.add(_emailValidateInClient);
+  }
+
+  String validateEmail(value) {
+    _emailValidateInClient
+        ? _emailValidatorClient(value)
+        : _emailValidatorServer(value);
+  }
+
+  _emailValidatorServer(String value) {
+
     if (value != 'pazuzu@gmail.com') {
       return 'Digite um email existente';
     }
