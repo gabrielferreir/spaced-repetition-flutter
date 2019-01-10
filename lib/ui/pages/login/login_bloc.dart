@@ -4,6 +4,7 @@ import 'package:tg/ui/common/slide_router_right.dart';
 import 'package:tg/ui/pages/home/home.page.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:async';
+import './login_repo.dart';
 
 class LoginBloc {
   final pageController = new PageController();
@@ -16,7 +17,8 @@ class LoginBloc {
   final emailFocusNode = FocusNode();
 
   final StreamController<bool> _ctrlEmailDirty = BehaviorSubject<bool>();
-  final StreamController<bool> _ctrlEmailValidateInClient = BehaviorSubject<bool>();
+  final StreamController<bool> _ctrlEmailValidateInClient =
+      BehaviorSubject<bool>();
 
   Stream<bool> get emailDirty => _ctrlEmailDirty.stream;
 
@@ -122,15 +124,16 @@ class LoginBloc {
     _ctrlEmailValidateInClient.sink.add(_emailValidateInClient);
   }
 
-  String validateEmail(value) {
+  validateEmail(value) {
     _emailValidateInClient
         ? _emailValidatorClient(value)
         : _emailValidatorServer(value);
   }
 
-  _emailValidatorServer(String value) {
-
-    if (value != 'pazuzu@gmail.com') {
+  Future<String> _emailValidatorServer(String value) async {
+    final a = await LoginRepo.checkEmail(value);
+    print(a.toString());
+    if (!a.isExist()) {
       return 'Digite um email existente';
     }
   }

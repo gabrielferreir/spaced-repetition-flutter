@@ -17,5 +17,4 @@ class LoginBlocProvider extends InheritedWidget {
             as LoginBlocProvider)
         .bloc;
   }
-
 }
