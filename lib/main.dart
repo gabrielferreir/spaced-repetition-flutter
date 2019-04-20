@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:tg/ui/pages/login/login.page.dart';
-import 'package:tg/ui/pages/login/login_bloc_provider.dart';
 
-void main() => runApp(MaterialApp(
-      title: 'Home',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          accentColor: Colors.purple[900],
-          primaryColor: Colors.indigo[700],
-          buttonColor: Colors.blueGrey,
-          bottomAppBarColor: Colors.indigo[700]),
-      home: LoginBlocProvider(
-        child: LoginPage(),
-      ),
-    ));
+import 'package:tg/theme.dart';
+import 'package:bloc/bloc.dart';
+import 'package:tg/bloc_delegate.dart';
+import 'package:tg/repository/user_repository.dart';
+import 'package:tg/pages/authentication/authentication.dart';
+
+void main() {
+  BlocSupervisor().delegate = SimpleBlocDelegate();
+  return runApp(MaterialApp(
+    title: 'Home',
+    debugShowCheckedModeBanner: false,
+    theme: theme,
+    home: AuthenticationPage(userRepository: UserRepository())
+  ));
+}
