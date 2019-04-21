@@ -25,17 +25,19 @@ class _LoginPassFormState extends State<LoginPassForm> {
     super.initState();
   }
 
-  String name(state) => state is LoginPassInitial ||
+  String name(state) =>
+      state is LoginPassInitial ||
           state is LoginPassInvalid ||
           state is LoginPassLoading
-      ? state.name
-      : '';
+          ? state.name
+          : '';
 
-  String email(state) => state is LoginPassInitial ||
+  String email(state) =>
+      state is LoginPassInitial ||
           state is LoginPassInvalid ||
           state is LoginPassLoading
-      ? state.email
-      : '';
+          ? state.email
+          : '';
 
   @override
   Widget build(BuildContext context) {
@@ -64,15 +66,18 @@ class _LoginPassFormState extends State<LoginPassForm> {
                         children: <Widget>[
                           IconButton(
                               icon: Icon(Icons.arrow_back),
-                              onPressed: () => widget.pageController
-                                  .animateToPage(0,
+                              onPressed: () =>
+                                  widget.pageController
+                                      .animateToPage(0,
                                       duration: Duration(milliseconds: 480),
                                       curve: Curves.ease)),
                           CircleAvatar(
                             child: Text(name(state).length > 0
                                 ? name(state)[0].toUpperCase()
                                 : ''),
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: Theme
+                                .of(context)
+                                .primaryColor,
                           ),
                           Padding(
                               padding: EdgeInsets.only(left: 16.0),
@@ -82,7 +87,7 @@ class _LoginPassFormState extends State<LoginPassForm> {
                                   Text(
                                     name(state),
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     email(state),
@@ -104,14 +109,15 @@ class _LoginPassFormState extends State<LoginPassForm> {
                           key: form,
                           child: TextFormField(
                               controller: _passController,
+                              autovalidate: true,
                               decoration: InputDecoration(
                                   labelText: 'Senha',
                                   errorText: state is LoginPassInvalid &&
-                                          _passController.dirty
+                                      _passController.dirty
                                       ? 'Senha incorreta'
                                       : null),
                               obscureText: true,
-                              validator: (String value) => validate(value)),
+                              validator: (String value) => _validate(value)),
                         ),
                       ),
                     ),
@@ -131,10 +137,22 @@ class _LoginPassFormState extends State<LoginPassForm> {
                                     borderRadius: BorderRadius.circular(48.0)),
                                 onPressed: () =>
                                     _submit(name(state), email(state)),
-                                color: Theme.of(context).primaryColor,
-                                child: Text(
+                                color: Theme
+                                    .of(context)
+                                    .primaryColor,
+                                child: state is LoginPassLoading
+                                    ? Container(
+                                  height: 24.0,
+                                  width: 24.0,
+                                  child: CircularProgressIndicator(),
+                                )
+                                    : Text(
                                   'ENTRAR',
-                                  style: TextStyle(color: Colors.white),
+                                  style:
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .button,
                                 ),
                               ),
                             ))),
@@ -159,7 +177,7 @@ class _LoginPassFormState extends State<LoginPassForm> {
     }
   }
 
-  validate(String pass) {
+  _validate(String pass) {
     if (_passController.dirty) {
       if (pass.length == 0) return 'Esse campo é obrigatorio';
     }
