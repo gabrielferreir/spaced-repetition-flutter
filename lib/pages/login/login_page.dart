@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:tg/pages/login/login.dart';
+import 'package:tg/repository/user_repository.dart';
 
 class LoginPage extends StatefulWidget {
+  UserRepository userRepository;
+
+  LoginPage({@required this.userRepository}) : assert(userRepository != null);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  LoginBloc loginBloc;
+
+  @override
+  void initState() {
+    loginBloc = LoginBloc(userRepository: widget.userRepository);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +40,7 @@ class _LoginPageState extends State<LoginPage> {
             controller: PageController(),
             pageSnapping: false,
             physics: NeverScrollableScrollPhysics(),
-            children: <Widget>[
-              LoginForm(loginBloc: LoginBloc())
-            ],
+            children: <Widget>[LoginForm(loginBloc: loginBloc)],
           ),
         )
       ],

@@ -47,7 +47,8 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
             }
             if (state is AuthenticationAuthenticated) return HomePage();
 
-            if (state is AuthenticationUnauthenticated) return LoginPage();
+            if (state is AuthenticationUnauthenticated)
+              return LoginPage(userRepository: widget.userRepository);
           }),
     );
   }
