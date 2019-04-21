@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tg/pages/login/login.dart';
 import 'package:tg/core/text_controller.dart';
+import 'package:tg/pages/home/home.dart';
 
 class LoginPassForm extends StatefulWidget {
   LoginBloc loginBloc;
@@ -24,12 +25,30 @@ class _LoginPassFormState extends State<LoginPassForm> {
     super.initState();
   }
 
+  String name(state) => state is LoginPassInitial ||
+          state is LoginPassInvalid ||
+          state is LoginPassLoading
+      ? state.name
+      : '';
+
+  String email(state) => state is LoginPassInitial ||
+          state is LoginPassInvalid ||
+          state is LoginPassLoading
+      ? state.email
+      : '';
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginEvent, LoginState>(
         bloc: widget.loginBloc,
         builder: (BuildContext context, LoginState state) {
-          print(state.toString());
+          _onWidgetDidBuild(() {
+            if (state is LoginSuccessful) {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
+            }
+          });
+
           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -50,8 +69,8 @@ class _LoginPassFormState extends State<LoginPassForm> {
                                       duration: Duration(milliseconds: 480),
                                       curve: Curves.ease)),
                           CircleAvatar(
-                            child: Text(state is LoginPassInitial
-                                ? '${state.name[0].toUpperCase()}'
+                            child: Text(name(state).length > 0
+                                ? name(state)[0].toUpperCase()
                                 : ''),
                             backgroundColor: Theme.of(context).primaryColor,
                           ),
@@ -61,16 +80,12 @@ class _LoginPassFormState extends State<LoginPassForm> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    state is LoginPassInitial
-                                        ? '${state.name}'
-                                        : '',
+                                    name(state),
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    state is LoginPassInitial
-                                        ? '${state.email}'
-                                        : '',
+                                    email(state),
                                     style: TextStyle(),
                                   ),
                                 ],
@@ -86,10 +101,15 @@ class _LoginPassFormState extends State<LoginPassForm> {
                       child: Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Form(
-//                          key: bloc.formPass,
+                          key: form,
                           child: TextFormField(
                               controller: _passController,
-                              decoration: InputDecoration(labelText: 'Senha'),
+                              decoration: InputDecoration(
+                                  labelText: 'Senha',
+                                  errorText: state is LoginPassInvalid &&
+                                          _passController.dirty
+                                      ? 'Senha incorreta'
+                                      : null),
                               obscureText: true,
                               validator: (String value) => validate(value)),
                         ),
@@ -109,9 +129,8 @@ class _LoginPassFormState extends State<LoginPassForm> {
                               child: FlatButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(48.0)),
-                                onPressed: () {
-//                                  bloc.passSubmitValidate(context);
-                                },
+                                onPressed: () =>
+                                    _submit(name(state), email(state)),
                                 color: Theme.of(context).primaryColor,
                                 child: Text(
                                   'ENTRAR',
@@ -133,9 +152,10 @@ class _LoginPassFormState extends State<LoginPassForm> {
     });
   }
 
-  _submit() {
+  _submit(String name, String email) {
     if (form.currentState.validate()) {
-      widget.loginBloc.dispatch(LoginCheckEmail(email: _passController.text));
+      widget.loginBloc.dispatch(
+          LoginSingin(name: name, email: email, pass: _passController.text));
     }
   }
 

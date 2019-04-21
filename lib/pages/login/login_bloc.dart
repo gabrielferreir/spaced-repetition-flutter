@@ -30,5 +30,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield LoginInitial();
       }
     }
+
+    if (event is LoginSingin) {
+      yield LoginPassLoading(name: event.name, email: event.email);
+      try {
+        await userRepository.singin(email: event.email, pass: event.pass);
+        yield LoginSuccessful();
+      } on NotFoundException {
+        yield LoginPassInvalid(name: event.name, email: event.email);
+      } catch (e) {}
+    }
   }
 }

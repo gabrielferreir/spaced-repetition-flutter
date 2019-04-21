@@ -30,3 +30,30 @@ class LoginPassInitial extends LoginState {
   @override
   String toString() => 'LoginPassInitial: $name - $email';
 }
+
+class LoginPassInvalid extends LoginState {
+  final String name;
+  final String email;
+
+  LoginPassInvalid({@required this.name, @required this.email})
+      : super([name, email]);
+
+  @override
+  String toString() => 'LoginPassInitial: $name - $email';
+}
+
+class LoginPassLoading extends LoginState {
+  final String name;
+  final String email;
+
+  LoginPassLoading({@required this.name, @required this.email})
+      : super([name, email]);
+
+  @override
+  String toString() => 'LoginPassLoading';
+}
+
+class LoginSuccessful extends LoginState {
+  @override
+  String toString() => 'LoginSuccessful';
+}

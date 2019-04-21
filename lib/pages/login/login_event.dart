@@ -4,10 +4,11 @@ import 'package:equatable/equatable.dart';
 abstract class LoginEvent extends Equatable {}
 
 class LoginSingin extends LoginEvent {
+  String name;
   String email;
   String pass;
 
-  LoginSingin({@required this.email, @required this.pass});
+  LoginSingin({@required this.name, @required this.email, @required this.pass});
 
   @override
   String toString() => 'LoginSingin $email $pass';
