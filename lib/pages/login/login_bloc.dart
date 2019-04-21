@@ -24,11 +24,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       print('Ouu');
       try {
         final used = await userRepository.checkEmail(email: event.email);
-        print('used $used');
-        if (used) {
-          print('Go');
-          yield LoginInitial();
-        } else
+        if (used)
+          yield LoginPassInitial();
+        else
           yield LoginEmailNotFound();
       } catch (e) {
         print('Deu pau');

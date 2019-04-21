@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   LoginBloc loginBloc;
+  final pageController = PageController();
 
   @override
   void initState() {
@@ -37,10 +38,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         Expanded(
           child: PageView(
-            controller: PageController(),
+            controller: pageController,
             pageSnapping: false,
             physics: NeverScrollableScrollPhysics(),
-            children: <Widget>[LoginForm(loginBloc: loginBloc)],
+            children: <Widget>[
+              LoginForm(loginBloc: loginBloc, pageController: pageController),
+              Center(child: Text('Pass'))
+            ],
           ),
         )
       ],

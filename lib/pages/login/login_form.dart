@@ -6,8 +6,9 @@ import 'package:tg/pages/login/login.dart';
 
 class LoginForm extends StatefulWidget {
   LoginBloc loginBloc;
+  PageController pageController;
 
-  LoginForm({@required this.loginBloc});
+  LoginForm({@required this.loginBloc, @required this.pageController});
 
   @override
   _LoginFormState createState() => _LoginFormState();
@@ -18,11 +19,22 @@ class _LoginFormState extends State<LoginForm> {
   final form = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginEvent, LoginState>(
         bloc: widget.loginBloc,
         builder: (BuildContext context, LoginState state) {
-          print(state.toString());
+          if (state is LoginPassInitial) {
+            _onWidgetDidBuild(() {
+              widget.pageController.animateToPage(1,
+                  duration: Duration(milliseconds: 480), curve: Curves.ease);
+            });
+          }
+
           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -68,7 +80,7 @@ class _LoginFormState extends State<LoginForm> {
                                     child: CircularProgressIndicator(),
                                   )
                                 : Text(
-                                    'ENTRAR DOIDO',
+                                    'ENTRAR',
                                     style: Theme.of(context).textTheme.button,
                                   )),
                       ),
@@ -94,6 +106,12 @@ class _LoginFormState extends State<LoginForm> {
             ),
           );
         });
+  }
+
+  _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
   }
 
   _submit() {

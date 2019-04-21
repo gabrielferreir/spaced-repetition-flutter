@@ -16,3 +16,8 @@ class LoginEmailNotFound extends LoginState {
   @override
   String toString() => 'LoginEmailNotFound';
 }
+
+class LoginPassInitial extends LoginState {
+  @override
+  String toString() => 'LoginPassInitial';
+}
