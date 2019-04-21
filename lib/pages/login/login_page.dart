@@ -27,14 +27,15 @@ class _LoginPageState extends State<LoginPage> {
         body: Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        Flexible(
-          child: Container(
-            color: Theme.of(context).primaryColor,
-            child: Center(
-              child: Text('Logo'),
+        Container(
+          color: Colors.black12,
+          child: Center(
+            child: FlutterLogo(
+              size: 120.0,
+              colors: Colors.indigo,
             ),
-            height: 240.0,
           ),
+          height: 240.0,
         ),
         Expanded(
           child: PageView(
@@ -42,8 +43,10 @@ class _LoginPageState extends State<LoginPage> {
             pageSnapping: false,
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              LoginForm(loginBloc: loginBloc, pageController: pageController),
-              Center(child: Text('Pass'))
+              LoginEmailForm(
+                  loginBloc: loginBloc, pageController: pageController),
+              LoginPassForm(
+                  loginBloc: loginBloc, pageController: pageController)
             ],
           ),
         )

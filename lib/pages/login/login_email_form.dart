@@ -3,19 +3,20 @@ import 'package:meta/meta.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tg/pages/login/login.dart';
+import 'package:tg/core/text_controller.dart';
 
-class LoginForm extends StatefulWidget {
+class LoginEmailForm extends StatefulWidget {
   LoginBloc loginBloc;
   PageController pageController;
 
-  LoginForm({@required this.loginBloc, @required this.pageController});
+  LoginEmailForm({@required this.loginBloc, @required this.pageController});
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _LoginEmailFormState createState() => _LoginEmailFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
-  final _emailController = TextEditingController();
+class _LoginEmailFormState extends State<LoginEmailForm> {
+  final _emailController = TextController();
   final form = GlobalKey<FormState>();
 
   @override
@@ -52,7 +53,8 @@ class _LoginFormState extends State<LoginForm> {
                                 controller: _emailController,
                                 decoration: InputDecoration(
                                     labelText: 'Email',
-                                    errorText: state is LoginEmailNotFound
+                                    errorText: state is LoginEmailNotFound &&
+                                            _emailController.dirty
                                         ? 'E-mail não existe'
                                         : null),
                                 validator: (String value) => validate(value))),
@@ -115,15 +117,15 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   _submit() {
-    print('_submit');
     if (form.currentState.validate()) {
       widget.loginBloc.dispatch(LoginCheckEmail(email: _emailController.text));
     }
   }
 
   validate(String email) {
-    print('validate $email');
-    if (email.length == 0) return 'Esse campo é obrigatorio';
+    if (_emailController.dirty) {
+      if (email.length == 0) return 'Esse campo é obrigatorio';
+    }
     return null;
   }
 }
