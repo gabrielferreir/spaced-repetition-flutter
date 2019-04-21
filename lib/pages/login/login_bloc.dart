@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:tg/pages/login/login.dart';
 import 'package:tg/repository/user_repository.dart';
+import 'package:tg/core/exceptions.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   UserRepository userRepository;
@@ -21,11 +22,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is LoginCheckEmail) {
       yield LoginLoading();
       try {
-        final used = await userRepository.checkEmail(email: event.email);
-        if (used)
-          yield LoginPassInitial();
-        else
-          yield LoginEmailNotFound();
+        final user = await userRepository.checkEmail(email: event.email);
+        yield LoginPassInitial(email: user.email, name: user.name);
+      } on NotFoundException {
+        yield LoginEmailNotFound();
       } catch (e) {
         yield LoginInitial();
       }

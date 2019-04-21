@@ -29,6 +29,7 @@ class _LoginPassFormState extends State<LoginPassForm> {
     return BlocBuilder<LoginEvent, LoginState>(
         bloc: widget.loginBloc,
         builder: (BuildContext context, LoginState state) {
+          print(state.toString());
           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -49,7 +50,9 @@ class _LoginPassFormState extends State<LoginPassForm> {
                                       duration: Duration(milliseconds: 480),
                                       curve: Curves.ease)),
                           CircleAvatar(
-                            child: Text('G'),
+                            child: Text(state is LoginPassInitial
+                                ? '${state.name[0].toUpperCase()}'
+                                : ''),
                             backgroundColor: Theme.of(context).primaryColor,
                           ),
                           Padding(
@@ -58,12 +61,16 @@ class _LoginPassFormState extends State<LoginPassForm> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    'Gabriel Ferreira',
+                                    state is LoginPassInitial
+                                        ? '${state.name}'
+                                        : '',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    'gabriel.ferreira@outlook.com.br',
+                                    state is LoginPassInitial
+                                        ? '${state.email}'
+                                        : '',
                                     style: TextStyle(),
                                   ),
                                 ],

@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
-abstract class LoginState extends Equatable {}
+abstract class LoginState extends Equatable {
+  LoginState([List props = const []]) : super(props);
+}
 
 class LoginInitial extends LoginState {
   @override
@@ -18,6 +21,12 @@ class LoginEmailNotFound extends LoginState {
 }
 
 class LoginPassInitial extends LoginState {
+  final String name;
+  final String email;
+
+  LoginPassInitial({@required this.name, @required this.email})
+      : super([name, email]);
+
   @override
-  String toString() => 'LoginPassInitial';
+  String toString() => 'LoginPassInitial: $name - $email';
 }

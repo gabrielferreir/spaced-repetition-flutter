@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:tg/repository/user_repository_api.dart';
 import 'package:tg/core/exceptions.dart';
+import 'package:tg/models/user_model.dart';
 
 class UserRepository {
   UserRepositoryApi userRepositoryApi;
@@ -18,14 +19,12 @@ class UserRepository {
     return false;
   }
 
-  Future<bool> checkEmail({@required email}) async {
+  Future<User> checkEmail({@required email}) async {
     final response = await this.userRepositoryApi.checkEmail(email: email);
 
-    if (response.statusCode == 200) return true;
-    if (response.statusCode == 404) return false;
+    if (response.statusCode == 200)
+      return User.fromJSON(response.body['content']);
+    if (response.statusCode == 404) return throw NotFoundException();
     return throw UnknownException();
   }
-
-
-
 }
